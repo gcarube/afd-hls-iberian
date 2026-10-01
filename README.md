@@ -115,18 +115,32 @@ Nine-day temporal reconstruction combining 6 HLS snapshots with 12,504 MTG FRP d
 
 ```
 .
-├── gee/
-│   ├── GEE_CAL_coefficients.js      # OLS coefficient computation per fire
-│   ├── GEE_01_med_vs_iberian.js     # Version comparison, Jaccard index
-│   ├── GEE_02_modis_viirs.js        # Validation against MODIS/VIIRS
-│   └── GEE_04_agreement_maps.js     # Spatial agreement map export
+├── gee/scripts/
+│   ├── coeficients.js               # OLS coefficient computation per fire and per N
+│   ├── coeficient_analysis.js       # Coefficient evolution charts (N=10→20)
+│   ├── jaccard.js                   # Mediterranean vs Iberian comparison, Jaccard index
+│   ├── pixels_per_fire.js           # Valid pixel count per AOI
+│   └── scatter_sierra_bermeja.js    # Red vs SWIR2 scatter export
 ├── python/
-│   ├── download_frp_lsasaf.py       # MTG FRP-PIXEL download (EUMETSAT REST API)
-│   └── analyze_frp_timeseries.py    # FRP time series processing and plots
+│   ├── paths.py                     # Default input/output folders (single source of truth)
+│   ├── geodesy.py                   # Pixel areas on the WGS84 ellipsoid
+│   ├── coefficients.py              # Port of coeficients.js
+│   ├── coefficient_analysis.py      # Port of coeficient_analysis.js
+│   ├── jaccard.py                   # Port of jaccard.js (+ comparison maps)
+│   ├── pixels_per_fire.py           # Port of pixels_per_fire.js
+│   ├── scatter_validation.py        # Red vs SWIR2 scatter data of the validation fires
+│   └── scatter_plot.py              # Red vs SWIR2 scatter figures
 ├── data/
-│   ├── fires_sample.csv             # 20-fire sample with AOIs and metadata
-│   └── coefficients_per_fire.csv    # Individual AFD-S2 coefficients
-├── figures/
+│   ├── hls_imagery/                 # HLS GeoTIFFs exported from GEE (input)
+│   └── results/
+│       ├── coefficients/            # coefficients_by_n.csv, coefficients_per_fire.csv
+│       ├── jaccard/                 # jaccard_per_fire.csv
+│       ├── pixels/                  # pixels_per_fire.csv
+│       ├── scatter/                 # scatter_Red_SWIR2_<fire>.csv
+│       └── figures/
+│           ├── coefficients/        # coef_*_vs_n.png
+│           ├── jaccard/             # jaccard_map_<fire>.png
+│           └── scatter/             # scatter_Red_SWIR2_<fire>.png
 └── docs/
     └── TFM_GCU.pdf                  # Full thesis (Spanish)
 ```

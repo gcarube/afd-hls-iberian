@@ -1,6 +1,6 @@
 // ============================================
-// ANÁLISIS DE SENSIBILIDAD DE COEFICIENTES AFD-S2
-// N=10 a N=20 con validación fija
+// AFD-S2 COEFFICIENT SENSITIVITY ANALYSIS
+// N=10 to N=20 with fixed validation set
 // ============================================
 
 var allAssets = [
@@ -26,52 +26,52 @@ var allAssets = [
   'projects/stunning-hull-476912-p8/assets/Vall_dEbo_20220814_HLSL30'
 ];
 
-// ----- VALIDACIÓN FIJA -----
-// N=10-11: 2 incendios
-var validacion2 = [
+// ----- FIXED VALIDATION -----
+// N=10-11: 2 fires
+var validation2 = [
   'projects/stunning-hull-476912-p8/assets/Sierra_Bermeja_20210909_HLSL30',
   'projects/stunning-hull-476912-p8/assets/Losacio_20220718_HLSS30'
 ];
 
-// N=12-17: 3 incendios
-var validacion3 = [
+// N=12-17: 3 fires
+var validation3 = [
   'projects/stunning-hull-476912-p8/assets/Sierra_Bermeja_20210909_HLSL30',
   'projects/stunning-hull-476912-p8/assets/Losacio_20220718_HLSS30',
   'projects/stunning-hull-476912-p8/assets/Vall_dEbo_20220814_HLSL30'
 ];
 
-// N=18-20: 4 incendios
-var validacion4 = [
+// N=18-20: 4 fires
+var validation4 = [
   'projects/stunning-hull-476912-p8/assets/Sierra_Bermeja_20210909_HLSL30',
   'projects/stunning-hull-476912-p8/assets/Losacio_20220718_HLSS30',
   'projects/stunning-hull-476912-p8/assets/Vall_dEbo_20220814_HLSL30',
   'projects/stunning-hull-476912-p8/assets/Gargantilla_20250817_HLSL30'
 ];
 
-// Pool de calibración (excluir los 4 de validación)
+// Calibration pool (excludes the 4 validation fires)
 var calibPool = allAssets.filter(function(asset) {
-  return validacion4.indexOf(asset) === -1;  // 16 assets disponibles
+  return validation4.indexOf(asset) === -1;  // 16 assets available
 });
 
-// ----- TABLA DE SPLITS -----
+// ----- SPLIT TABLE -----
 var splitTable = [
-  {total: 10, calib: 8,  validSet: validacion2},
-  {total: 11, calib: 9,  validSet: validacion2},
-  {total: 12, calib: 9,  validSet: validacion3},
-  {total: 13, calib: 10, validSet: validacion3},
-  {total: 14, calib: 11, validSet: validacion3},
-  {total: 15, calib: 12, validSet: validacion3},
-  {total: 16, calib: 13, validSet: validacion3},
-  {total: 17, calib: 14, validSet: validacion3},
-  {total: 18, calib: 14, validSet: validacion4},
-  {total: 19, calib: 15, validSet: validacion4},
-  {total: 20, calib: 16, validSet: validacion4}
+  {total: 10, calib: 8,  validSet: validation2},
+  {total: 11, calib: 9,  validSet: validation2},
+  {total: 12, calib: 9,  validSet: validation3},
+  {total: 13, calib: 10, validSet: validation3},
+  {total: 14, calib: 11, validSet: validation3},
+  {total: 15, calib: 12, validSet: validation3},
+  {total: 16, calib: 13, validSet: validation3},
+  {total: 17, calib: 14, validSet: validation3},
+  {total: 18, calib: 14, validSet: validation4},
+  {total: 19, calib: 15, validSet: validation4},
+  {total: 20, calib: 16, validSet: validation4}
 ];
 
 var SCALE = 30;
 
 // ============================================
-// FUNCIÓN: Calcular coeficientes de UN asset
+// FUNCTION: compute coefficients for ONE asset
 // ============================================
 function computeCoefficients(assetPath) {
   var img = ee.Image(assetPath);
@@ -81,7 +81,7 @@ function computeCoefficients(assetPath) {
   var b5 = img.select('b5');  // SWIR1 (B11)
   var b6 = img.select('b6');  // SWIR2 (B12)
 
-  // Regresión OLS: X = b6 (SWIR2), Y = b3 (Red)
+  // OLS regression: X = b6 (SWIR2), Y = b3 (Red)
   var regression = b6.addBands(b3).reduceRegion({
     reducer: ee.Reducer.linearFit(),
     geometry: geometry,
@@ -93,7 +93,7 @@ function computeCoefficients(assetPath) {
   var a = ee.Number(regression.get('scale'));
   var b = ee.Number(regression.get('offset'));
 
-  // Calcular σ de los residuos
+  // σ of the residuals
   var predicted = b6.multiply(a).add(b);
   var residuals  = b3.subtract(predicted);
 
@@ -107,10 +107,10 @@ function computeCoefficients(assetPath) {
     }).get('b3')
   );
 
-  // b ajustado con -3σ (límite inferior de predicción)
+  // b adjusted by -3σ (lower prediction bound)
   var b_adjusted = b.subtract(sigma.multiply(3));
 
-  // Percentiles 0.99 para c (B11) y d (B12)
+  // 99th percentiles for c (B11) and d (B12)
   var percentiles = img.select(['b5', 'b6']).reduceRegion({
     reducer: ee.Reducer.percentile([99]),
     geometry: geometry,
@@ -130,7 +130,7 @@ function computeCoefficients(assetPath) {
 }
 
 // ============================================
-// FUNCIÓN: Media y std de un conjunto de assets
+// FUNCTION: mean and std over a set of assets
 // ============================================
 function computeMeanCoefficients(assetSubset) {
   var coeffList = assetSubset.map(computeCoefficients);
@@ -153,16 +153,16 @@ function computeMeanCoefficients(assetSubset) {
 }
 
 // ============================================
-// ANÁLISIS PRINCIPAL
+// MAIN ANALYSIS
 // ============================================
 
 print('═════════════════════════════════════════════════');
-print('   ANÁLISIS DE SENSIBILIDAD AFD-S2 (N=10 a N=20)');
-print('   Validación fija incremental');
-print('   Pool calibración: ' + calibPool.length + ' incendios');
+print('   AFD-S2 SENSITIVITY ANALYSIS (N=10 to N=20)');
+print('   Incremental fixed validation');
+print('   Calibration pool: ' + calibPool.length + ' fires');
 print('═════════════════════════════════════════════════');
 print('');
-print('VALIDACIÓN FIJA:');
+print('FIXED VALIDATION:');
 print('  N=10-11: Sierra_Bermeja + Losacio');
 print('  N=12-17: + Vall_dEbo');
 print('  N=18-20: + Gargantilla');
@@ -175,24 +175,24 @@ splitTable.forEach(function(split) {
 
   print('══════════════════════════════════════════════');
   print('TOTAL=' + split.total +
-        '  |  CALIBRACIÓN=' + split.calib +
-        '  |  VALIDACIÓN=' + validAssets.length);
+        '  |  CALIBRATION=' + split.calib +
+        '  |  VALIDATION=' + validAssets.length);
   print('══════════════════════════════════════════════');
 
   var mc = computeMeanCoefficients(calibAssets);
 
-  print('  Coeficientes medios (± desv. estándar):');
+  print('  Mean coefficients (± std. dev.):');
   print('    a:', mc.a_mean, '±', mc.a_std);
   print('    b:', mc.b_mean, '±', mc.b_std);
   print('    c:', mc.c_mean, '±', mc.c_std);
   print('    d:', mc.d_mean, '±', mc.d_std);
   print('');
 
-  print('  Incendios CALIBRACIÓN:');
+  print('  CALIBRATION fires:');
   calibAssets.forEach(function(a) {
     print('    [C]', a.split('/').slice(-1)[0]);
   });
-  print('  Incendios VALIDACIÓN (fijos):');
+  print('  VALIDATION fires (fixed):');
   validAssets.forEach(function(a) {
     print('    [V]', a.split('/').slice(-1)[0]);
   });
@@ -200,17 +200,17 @@ splitTable.forEach(function(split) {
 });
 
 // ============================================
-// COEFICIENTES INDIVIDUALES POR INCENDIO
+// INDIVIDUAL COEFFICIENTS PER FIRE
 // ============================================
 print('═════════════════════════════════════════════════');
-print('   COEFICIENTES INDIVIDUALES (20 INCENDIOS)');
+print('   INDIVIDUAL COEFFICIENTS (20 FIRES)');
 print('═════════════════════════════════════════════════');
 print('');
 
 allAssets.forEach(function(assetPath) {
   var name   = assetPath.split('/').slice(-1)[0];
   var coeffs = computeCoefficients(assetPath);
-  var role   = validacion4.indexOf(assetPath) !== -1 ? '[VALIDACIÓN]' : '[calibración]';
+  var role   = validation4.indexOf(assetPath) !== -1 ? '[VALIDATION]' : '[calibration]';
 
   print('──────────────────────────────────');
   print(role, name);
@@ -223,16 +223,16 @@ allAssets.forEach(function(assetPath) {
 });
 
 print('═════════════════════════════════════════════════');
-print('   FIN DEL ANÁLISIS');
+print('   END OF ANALYSIS');
 print('═════════════════════════════════════════════════');
 print('');
-print('Incendios de validación fija:');
+print('Fixed validation fires:');
 print('  1. Sierra_Bermeja_20210909_HLSL30 (HLSL30, 2021)');
 print('  2. Losacio_20220718_HLSS30 (HLSS30, outlier)');
 print('  3. Vall_dEbo_20220814_HLSL30 (HLSL30, 2022)');
 print('  4. Gargantilla_20250817_HLSL30 (HLSL30, 2025)');
 
-// Añadir al final del script de coeficientes incrementales:
+// Min/max of the individual coefficients over the calibration pool
 var a_vals = [];
 var b_vals = [];
 var c_vals = [];
@@ -246,7 +246,7 @@ calibPool.forEach(function(asset) {
   d_vals.push(c.getNumber('d').getInfo());
 });
 
-print('Mín/Máx:');
+print('Min/Max:');
 print('  a:', Math.min.apply(null, a_vals), '/', Math.max.apply(null, a_vals));
 print('  b:', Math.min.apply(null, b_vals), '/', Math.max.apply(null, b_vals));
 print('  c:', Math.min.apply(null, c_vals), '/', Math.max.apply(null, c_vals));

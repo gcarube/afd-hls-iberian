@@ -6,11 +6,14 @@ Python port of gee/scripts/coeficients.js. Reads the HLS scenes exported
 from GEE in data/hls_imagery/ instead of the GEE assets.
 
 Usage:
-    python python/coefficients.py
-    python python/coefficients.py --data-dir data/hls_imagery --out data/coefficients_per_fire.csv
+    python python/coefficients.py                                      # writes data/results/coefficients/coefficients_by_n.csv
+    python python/coefficients.py --per-fire                           # also writes data/results/coefficients/coefficients_per_fire.csv
+    python python/coefficients.py --out other/per_fire.csv             # custom path for the per-fire CSV (implies --per-fire)
+    python python/coefficients.py --splits-out other/path.csv          # custom path for the per-N CSV
+    python python/coefficients.py --data-dir data/hls_imagery          # custom folder with the HLS GeoTIFFs
 
 Always writes the mean/std coefficients for each N (10..20) to
-data/coefficients_by_n.csv (override with --splits-out).
+data/results/coefficients/coefficients_by_n.csv (override with --splits-out).
 """
 
 import argparse
@@ -20,9 +23,10 @@ import numpy as np
 import pandas as pd
 import rasterio
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DATA_DIR = REPO_ROOT / "data" / "hls_imagery"
-DEFAULT_SPLITS_OUT = REPO_ROOT / "data" / "coefficients_by_n.csv"
+from paths import COEF_BY_N_CSV, COEF_PER_FIRE_CSV, HLS_DIR
+
+DEFAULT_DATA_DIR = HLS_DIR
+DEFAULT_SPLITS_OUT = COEF_BY_N_CSV
 
 ALL_ASSETS = [
     "Albergaria_20240918_HLSS30",
@@ -175,11 +179,14 @@ def main():
     parser = argparse.ArgumentParser(description="AFD-S2 coefficient sensitivity analysis")
     parser.add_argument("--data-dir", default=DEFAULT_DATA_DIR, type=Path,
                         help="Folder with the HLS GeoTIFFs (default: data/hls_imagery)")
+    parser.add_argument("--per-fire", action="store_true",
+                        help="Also save the individual coefficients to "
+                             "data/results/coefficients/coefficients_per_fire.csv")
     parser.add_argument("--out", type=Path, default=None,
-                        help="Optional CSV path to save the individual coefficients")
+                        help="Custom CSV path for the individual coefficients (implies --per-fire)")
     parser.add_argument("--splits-out", type=Path, default=DEFAULT_SPLITS_OUT,
                         help="CSV path for the mean/std coefficients per N "
-                             "(default: data/coefficients_by_n.csv)")
+                             "(default: data/results/coefficients/coefficients_by_n.csv)")
     args = parser.parse_args()
 
     # Per-asset coefficients are computed once and reused
@@ -263,14 +270,17 @@ def main():
 
     # Columns: N, a_mean, a_std, b_mean, b_std, c_mean, c_std, d_mean, d_std,
     #          n_calibration, n_validation
+    args.splits_out.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(split_rows).to_csv(args.splits_out, index=False)
     print(f"\nCoefficients per N saved to {args.splits_out}")
 
-    if args.out is not None:
+    if args.per_fire or args.out is not None:
+        out_path = args.out if args.out is not None else COEF_PER_FIRE_CSV
+        out_path.parent.mkdir(parents=True, exist_ok=True)
         out_df = pd.DataFrame([coeffs_by_asset[a] for a in ALL_ASSETS])
         out_df.insert(1, "role", ["V" if a in VALIDATION4 else "C" for a in ALL_ASSETS])
-        out_df.to_csv(args.out, index=False)
-        print(f"\nIndividual coefficients saved to {args.out}")
+        out_df.to_csv(out_path, index=False)
+        print(f"\nIndividual coefficients saved to {out_path}")
 
 
 if __name__ == "__main__":

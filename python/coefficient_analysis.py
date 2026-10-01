@@ -4,12 +4,12 @@ Trend charts for N=10 to N=20
 
 Python port of gee/scripts/coeficient_analysis.js. Instead of the static
 sensitivityData table, it reads the per-N coefficients produced by
-python/coefficients.py (data/coefficients_by_n.csv).
+python/coefficients.py (data/results/coefficients/coefficients_by_n.csv).
 
 Usage:
-    python python/coefficient_analysis.py
+    python python/coefficient_analysis.py                  # reads data/results/coefficients/coefficients_by_n.csv, saves PNGs to data/results/figures/coefficients/
     python python/coefficient_analysis.py --show           # also display the plot figures
-    python python/coefficient_analysis.py --input data/coefficients_by_n.csv --fig-dir figures --show
+    python python/coefficient_analysis.py --input other.csv --fig-dir other_folder  # custom input CSV and output folder
 """
 
 import argparse
@@ -18,9 +18,10 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_INPUT = REPO_ROOT / "data" / "coefficients_by_n.csv"
-DEFAULT_FIG_DIR = REPO_ROOT / "figures"
+from paths import COEF_BY_N_CSV, FIG_COEF_DIR
+
+DEFAULT_INPUT = COEF_BY_N_CSV
+DEFAULT_FIG_DIR = FIG_COEF_DIR
 
 X_LABEL = "N (sample size)"
 
@@ -79,9 +80,9 @@ def line_chart(df, series, title, y_label, out_path, y_window=None,
 def main():
     parser = argparse.ArgumentParser(description="AFD-S2 coefficient evolution charts (N=10 to N=20)")
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT,
-                        help="CSV with the coefficients per N (default: data/coefficients_by_n.csv)")
+                        help="CSV with the coefficients per N (default: data/results/coefficients/coefficients_by_n.csv)")
     parser.add_argument("--fig-dir", type=Path, default=DEFAULT_FIG_DIR,
-                        help="Folder where the PNG charts are saved (default: figures)")
+                        help="Folder where the PNG charts are saved (default: data/results/figures/coefficients/)")
     parser.add_argument("--show", action="store_true",
                         help="Show the charts interactively after saving them")
     args = parser.parse_args()
