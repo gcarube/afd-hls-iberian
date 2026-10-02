@@ -1,6 +1,6 @@
 # AFD-HLS Iberian — Regional Calibration of an Active Fire Detection Algorithm for the Iberian Peninsula
 
-Regional recalibration and validation of the **AFD-S2** active fire detection algorithm ([Hu et al., 2021](https://doi.org/10.3390/rs13234790)) for the Iberian Peninsula, using 30 m **Harmonized Landsat Sentinel-2 (HLS)** imagery, cross-validated against MODIS and VIIRS operational fire products.
+Regional recalibration and validation of the **AFD-S2** active fire detection algorithm ([Hu et al., 2021](https://doi.org/10.1016/j.jag.2021.102347)) for the Iberian Peninsula, using 30 m **Harmonized Landsat Sentinel-2 (HLS)** imagery, cross-validated against MODIS and VIIRS operational fire products.
 
 > Master's thesis — MSc in Disaster Management (Universidad Complutense de Madrid / Universidad Politécnica de Madrid), June 2026.
 > Author: **Guillermo Carreño Úbeda** · Supervisor: Gonzalo Barderas Machado
@@ -275,7 +275,7 @@ The GEE script reprojects MODIS straight from its sinusoidal grid to 30 m, while
 
 ## References
 
-- Hu, X. et al. (2021). *Sentinel-2 MSI data for active fire detection in major fire-prone biomes: A multi-criteria approach.* International Journal of Applied Earth Observation and Geoinformation.
+- Hu, X., Ban, Y., & Nascetti, A. (2021). *Sentinel-2 MSI data for active fire detection in major fire-prone biomes: A multi-criteria approach.* International Journal of Applied Earth Observation and Geoinformation, 101, 102347. https://doi.org/10.1016/j.jag.2021.102347
 - Schroeder, W. et al. (2016). *Active fire detection using Landsat-8/OLI data.* Remote Sensing of Environment.
 - Gorelick, N. et al. (2017). *Google Earth Engine: Planetary-scale geospatial analysis for everyone.* Remote Sensing of Environment.
 - San-Miguel-Ayanz, J. et al. (2012). *Comprehensive monitoring of wildfires in Europe: the European Forest Fire Information System (EFFIS).*
