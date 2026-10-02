@@ -201,7 +201,7 @@ python python/scatter_plot.py --all          #    ... and figures
 python python/modis_viirs_afd_validation.py  # 5. Validation vs MODIS/VIIRS (+ maps)
 ```
 
-Step 5 needs the reference masks exported by `gee/scripts/modis_viirs_afd_validation.js` (`<fire>_MODIS_active.tif`, `<fire>_VIIRS_active.tif`; run it once per fire with `selectedIndex` 0–3), downloaded from `Drive/TFM_validation` into `data/modis_viirs/`.
+Step 5 needs the reference masks exported by `gee/scripts/modis_viirs_afd_validation.js` (`<fire>_MODIS_active.tif`, `<fire>_VIIRS_active.tif`; run it once per fire with `selectedIndex` 0–3), exports downloaded from Google Drive to `data/modis_viirs/`.
 
 ---
 
