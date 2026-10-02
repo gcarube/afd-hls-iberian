@@ -1,0 +1,9 @@
+name,version,modis_available,viirs_available,pix_total,pix_cat1,pix_cat2,pix_cat3,ha_total,ha_cat1,ha_cat2,ha_cat3,confirmation_rate,ha_modis,ha_viirs,ha_inter_viirs,precision_viirs,recall_viirs
+Sierra_Bermeja,Mediterranean,True,False,1076,0,553,523,77.62,0.0,39.93,37.69,51.4,6980.04,0.0,0.0,,
+Sierra_Bermeja,Iberian,True,False,562,0,562,0,40.58,0.0,40.58,0.0,100.0,6980.04,0.0,0.0,,
+Losacio,Mediterranean,True,False,4036,0,3929,107,270.32,0.0,263.16,7.16,97.4,29100.33,0.0,0.0,,
+Losacio,Iberian,True,False,3465,0,3462,3,232.08,0.0,231.88,0.2,99.9,29100.33,0.0,0.0,,
+Vall_dEbo,Mediterranean,True,False,944,0,861,83,66.11,0.0,60.3,5.81,91.2,9416.6,0.0,0.0,,
+Vall_dEbo,Iberian,True,False,946,0,946,0,66.26,0.0,66.26,0.0,100.0,9416.6,0.0,0.0,,
+Gargantilla,Mediterranean,True,True,1402,1381,4,17,96.24,94.8,0.27,1.17,98.8,12054.39,7799.87,95.08,98.8,1.2
+Gargantilla,Iberian,True,True,1431,1419,4,8,98.24,97.41,0.27,0.55,99.4,12054.39,7799.87,97.69,99.4,1.3
