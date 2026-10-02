@@ -171,7 +171,7 @@ HLS detections with the MODIS (orange, 1 km) and VIIRS (yellow, 375 m) fire pixe
 │       ├── coefficients/            # coefficients_by_n.csv, coefficients_per_fire.csv
 │       ├── jaccard/                 # jaccard_per_fire.csv
 │       ├── pixels/                  # pixels_per_fire.csv
-│       ├── scatter/                 # scatter_Red_SWIR2_<fire>.csv
+│       ├── scatter/                 # scatter_Red_SWIR2_<fire>.csv (not versioned: run scatter_validation.py)
 │       ├── validation/              # validation_per_fire.csv
 │       └── figures/
 │           ├── coefficients/        # coef_*_vs_n.png
@@ -179,7 +179,7 @@ HLS detections with the MODIS (orange, 1 km) and VIIRS (yellow, 375 m) fire pixe
 │           ├── scatter/             # scatter_Red_SWIR2_<fire>.png
 │           └── validation/          # validation_map_<fire>.png
 └── docs/
-    └── TFM_GCU.pdf                  # Full thesis (Spanish)
+    └── TFM_GCU.pdf                  # Full thesis (Spanish, not versioned)
 ```
 
 ## Requirements

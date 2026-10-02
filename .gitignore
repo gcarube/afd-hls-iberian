@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project data kept out of git (large, regenerable or published elsewhere)
+docs/TFM_GCU.pdf
+data/results/scatter/*.csv
