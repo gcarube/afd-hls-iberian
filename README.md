@@ -4,6 +4,7 @@ Regional recalibration and validation of the **AFD-S2** active fire detection al
 
 > Master's thesis — MSc in Disaster Management (Universidad Complutense de Madrid / Universidad Politécnica de Madrid), June 2026.
 > Author: **Guillermo Carreño Úbeda** · Supervisor: Gonzalo Barderas Machado
+> Full text (Spanish): [Archivo Digital UPM — oa.upm.es/98040](https://oa.upm.es/98040/)
 
 ---
 
@@ -167,6 +168,7 @@ HLS detections with the MODIS (orange, 1 km) and VIIRS (yellow, 375 m) fire pixe
 ├── data/
 │   ├── hls_imagery/                 # HLS GeoTIFFs exported from GEE (input)
 │   ├── modis_viirs/                 # <fire>_MODIS_active.tif / <fire>_VIIRS_active.tif from GEE (input)
+│   ├── effis/                       # EFFIS burned-area perimeters of the 20 fires (shapefile, EPSG:3035)
 │   └── results/
 │       ├── coefficients/            # coefficients_by_n.csv, coefficients_per_fire.csv
 │       ├── jaccard/                 # jaccard_per_fire.csv
@@ -179,7 +181,7 @@ HLS detections with the MODIS (orange, 1 km) and VIIRS (yellow, 375 m) fire pixe
 │           ├── scatter/             # scatter_Red_SWIR2_<fire>.png
 │           └── validation/          # validation_map_<fire>.png
 └── docs/
-    └── TFM_GCU.pdf                  # Full thesis (Spanish, not versioned)
+    └── TFM_GCU.pdf                  # Full thesis (not versioned; see https://oa.upm.es/98040/)
 ```
 
 ## Requirements
@@ -289,10 +291,28 @@ The GEE script reprojects MODIS straight from its sinusoidal grid to 30 m, while
   school  = {Universidad Complutense de Madrid},
   year    = {2026},
   type    = {Master's thesis},
-  address = {Madrid, Spain}
+  address = {Madrid, Spain},
+  url     = {https://oa.upm.es/98040/}
 }
 ```
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+| Content | License |
+|---|---|
+| Source code (`python/`, `gee/`) | [MIT](LICENSE) |
+| Results produced by this repository (`data/results/`: tables and figures) | [CC BY 4.0](LICENSE-DATA) |
+| Third-party input data (`data/hls_imagery/`, `data/modis_viirs/`, `data/effis/`) | Terms of the original providers (below) |
+
+The third-party data are redistributed under their providers' terms:
+
+**NASA products** (HLS, MODIS, VIIRS) are openly shared without restriction under the [EOSDIS Data Use and Citation Guidance](https://www.earthdata.nasa.gov/engage/open-data-services-software-policies/data-use-guidance), which asks users to cite the datasets. The files in this repository are derived from them: the HLS scenes are clipped to each fire's AOI with the scale factor applied, and the MODIS/VIIRS files are binary fire masks composited over each fire's reference window.
+
+- Neigh, C., Ju, J., Roger, J.-C., Skakun, S., Vermote, E., Claverie, M., Dungan, J., Yin, Z., Freitag, B., & Justice, C. (2021). *HLS Sentinel-2 Multi-spectral Instrument Surface Reflectance Daily Global 30m v2.0* [Dataset]. NASA Land Processes DAAC. https://doi.org/10.5067/HLS/HLSS30.002
+- Neigh, C., Ju, J., Roger, J.-C., Skakun, S., Vermote, E., Claverie, M., Dungan, J., Yin, Z., Freitag, B., & Justice, C. (2021). *HLS Operational Land Imager Surface Reflectance and TOA Brightness Daily Global 30m v2.0* [Dataset]. NASA Land Processes DAAC. https://doi.org/10.5067/HLS/HLSL30.002
+- Giglio, L., & Justice, C. (2021). *MODIS/Terra Thermal Anomalies/Fire Daily L3 Global 1km SIN Grid V061* [Dataset]. NASA Land Processes DAAC. https://doi.org/10.5067/MODIS/MOD14A1.061
+- Giglio, L., & Justice, C. (2021). *MODIS/Aqua Thermal Anomalies/Fire Daily L3 Global 1km SIN Grid V061* [Dataset]. NASA Land Processes DAAC. https://doi.org/10.5067/MODIS/MYD14A1.061
+- NASA VIIRS Land Science Team (2020). *VIIRS (S-NPP) I Band 375 m Active Fire Product NRT* [Dataset]. NASA LANCE, distributed from NASA FIRMS. https://doi.org/10.5067/FIRMS/VIIRS/VNP14IMGT_NRT.002
+- NRT VIIRS 375 m Active Fire product VJ114IMGTDL_NRT (NOAA-20), distributed from NASA FIRMS. https://doi.org/10.5067/FIRMS/VIIRS/VJ114IMGT_NRT.002
+
+**EFFIS burned areas** — © European Union, 1995–2025, [European Forest Fire Information System (EFFIS)](https://forest-fire.emergency.copernicus.eu/). Licensed under [CC BY 4.0](https://forest-fire.emergency.copernicus.eu/about-effis/data-license). Changes: the EFFIS burnt areas for 2020–2025 were filtered to the 20 fires of the study sample and exported to shapefile with ArcGIS; geometries and attributes were not modified.
