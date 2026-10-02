@@ -220,3 +220,6 @@ __marimo__/
 # Project data kept out of git (large, regenerable or published elsewhere)
 docs/TFM_GCU.pdf
 data/results/scatter/*.csv
+
+# Claude Code project instructions (kept private)
+CLAUDE.md
